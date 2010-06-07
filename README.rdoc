@@ -1,0 +1,7 @@
+= Rack REST API Versioning
+
+TODO: stuff...
+
+== Legal
+
+Copyright (c) 2010 Adam Cigánek <adam.ciganek@gmail.com>. Released under the terms of MIT License: www.opensource.org/licenses/mit-license.php
