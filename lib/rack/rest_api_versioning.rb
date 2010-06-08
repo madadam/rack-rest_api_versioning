@@ -2,8 +2,9 @@ require 'rack'
 
 module Rack
   class RestApiVersioning
-    def initialize(app)
+    def initialize(app, options = {})
       @app = app
+      @options = options
     end
 
     def call(env)
@@ -11,13 +12,27 @@ module Rack
       @app.call(env)
     end
 
-    PATTERN = /.*\-v(\d+)/
+    # 1
+    # 1.2
+    # 1.2.3
+    VERSION_STRING       = '(\d+(?:\.\d+)*)'
+
+    # application/vnd.foo.bar-v1+xml
+    # application/vnd.foo.bar-v1.2.3+json
+    # ...
+    HTTP_ACCEPT_PATTERN  = /.*\-v#{VERSION_STRING}/
+
+    # ?version=1.2.3
+    QUERY_STRING_PATTERN = /\bversion=#{VERSION_STRING}/
 
     private
 
     def extract_version!(env)
-      version = env['HTTP_ACCEPT'].to_s[PATTERN, 1]
-      env['rack.rest_api_version'] = version
+      version = env['QUERY_STRING'].to_s[QUERY_STRING_PATTERN, 1] ||
+                env['HTTP_ACCEPT'].to_s[HTTP_ACCEPT_PATTERN, 1]   ||
+                @options[:default_version]
+
+      env['api_version'] = version
     end
   end
 end

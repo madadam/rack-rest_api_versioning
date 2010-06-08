@@ -1,6 +1,40 @@
 = Rack REST API Versioning
 
-TODO: stuff...
+This Rack middleware adds support for RESTful API versioning. According to RESTful best
+practices, the API version should be specified using content negotiation and custom vendor
+MIME types. For example, if your application's API supports multiple versions, a client can
+ask for a specific version like this:
+
+  GET /foo HTTP/1.1
+  Accept: application/vnd.foo.bar-v2+xml
+
+Where "application/vnd.foo.bar-v2+xml" is vendor MIME type your application defines.
+
+See this article: http://barelyenough.org/blog/2008/05/versioning-rest-web-services/ for more
+information about this practice.
+
+This middleware is used like any other rack middleware:
+
+  use Rack::RestApiVersioning
+
+When used, it extracts the version from the Accept header, and makes it available in the
+Rack environment hash as "api_version":
+
+  app = lambda { |env
+    puts env['api_version']
+    [200, {}, []]
+  }
+
+To simplify testing and debugging, this middleware also allows the version to be overriden
+using simple query string parameter:
+
+  GET /foo?version=2 HTTP/1.1
+
+This will ask for version 2, no matter what the Accept header is set to.
+
+Finally, a default version can be specified. This will be used if no version can be extracted:
+
+  use Rack::RestApiVersioning, :default_version => '2.0'
 
 == Legal
 
