@@ -1,8 +1,4 @@
-require 'test/unit'
-require 'rack'
-require 'rack/test'
-
-require 'rack/rest_api_versioning'
+require File.dirname(__FILE__) + '/test_helper'
 
 class RestApiVersioningTest < Test::Unit::TestCase
   include Rack::Test::Methods

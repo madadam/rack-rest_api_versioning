@@ -35,4 +35,12 @@ module Rack
       env['api_version'] = version
     end
   end
+
+  module RequestExtensions
+    def api_version
+      @env['api_version']
+    end
+  end
 end
+
+Rack::Request.send(:include, Rack::RequestExtensions)
